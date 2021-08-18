@@ -105,8 +105,8 @@ class ControlClient:
         control = cls(daemon_connector, listen_maddr, _initialized_with_create=True)
 
         if use_persistent_conn:
-            await control._ensure_persistent_conn()
             await asyncio.sleep(0.4)
+            await control._ensure_persistent_conn()
 
         return control
 
