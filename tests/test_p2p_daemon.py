@@ -10,7 +10,7 @@ import pytest
 from multiaddr import Multiaddr
 
 from hivemind.p2p import P2P, P2PDaemonError, P2PHandlerError
-from hivemind.proto import dht_pb2
+from hivemind.proto import dht_pb2, test_pb2
 from hivemind.utils.networking import get_free_port
 from hivemind.utils.serializer import MSGPackSerializer
 
@@ -81,6 +81,23 @@ async def test_daemon_replica_does_not_affect_primary():
 
     await p2p_daemon.shutdown()
     assert not is_process_running(child_pid)
+
+
+@pytest.mark.asyncio
+async def test_single_handler_per_protocol():
+    p2p_daemon = await P2P.create()
+    p2p_replica = await P2P.replicate(p2p_daemon.daemon_listen_maddr)
+
+    async def square_handler(data: test_pb2.TestRequest, context):
+        return test_pb2.TestResponse(number=data.number ** 2)
+
+    await p2p_daemon.add_protobuf_handler("square", square_handler, test_pb2.TestRequest)
+
+    with pytest.raises(P2PDaemonError):
+        await p2p_daemon.add_protobuf_handler("square", square_handler, test_pb2.TestRequest)
+
+    with pytest.raises(P2PDaemonError):
+        await p2p_replica.add_protobuf_handler("square", square_handler, test_pb2.TestRequest)
 
 
 @pytest.mark.parametrize(
