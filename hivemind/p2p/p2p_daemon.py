@@ -160,7 +160,6 @@ class P2P:
             **process_kwargs,
         )
 
-        await asyncio.sleep(0.4)
         self._child = await asyncio.subprocess.create_subprocess_exec(
             *proc_args, stdout=asyncio.subprocess.PIPE, stderr=asyncio.subprocess.STDOUT
         )
