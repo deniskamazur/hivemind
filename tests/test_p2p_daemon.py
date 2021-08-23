@@ -69,7 +69,7 @@ async def test_transports(host_maddrs: List[Multiaddr]):
     assert len(peers) == 1
 
     peers = await server.list_peers()
-    if len(peers > 1):
+    if len(peers) > 1:
         logger.warning("unexpected number of peers:", peers)
     assert len(peers) == 1
 
