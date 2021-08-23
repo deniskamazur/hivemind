@@ -131,6 +131,9 @@ class PeerInfo:
     def __str__(self):
         return f"{self.peer_id.pretty()} {','.join(str(a) for a in self.addrs)}"
 
+    def __repr__(self):
+        return str(self)
+
 
 class InvalidAddrError(ValueError):
     pass
